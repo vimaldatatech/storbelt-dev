@@ -1,0 +1,22 @@
+{
+  "menu": [
+    {
+      "name": "Dashboard",
+      "icon": "menu-icon icon-base bx bx-home-smile",
+      "slug": "dashboard",
+      "url": "/"
+    },
+    {
+      "name": "Staff",
+      "icon": "menu-icon icon-base bx bx-user",
+      "url": "app/user/list",
+      "slug": "app-user-list"
+    },
+    {
+      "name": "Company",
+      "icon": "menu-icon icon-base bx bx-building",
+      "url": "app/company/list",
+      "slug": "app-company-list"
+    }
+  ]
+}
