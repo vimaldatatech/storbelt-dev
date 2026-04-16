@@ -1,11 +1,12 @@
 <?php
 
 namespace App\Models;
+
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
 
 class CustomerFacility extends Model
 {
@@ -17,7 +18,7 @@ class CustomerFacility extends Model
         'api_id', 'user_id', 'code', 'is_active', 'group', 'name', 'short_name',
         'company_name', 'business_name', 'phone', 'email', 'address', 'suburb', 'city',
         'region', 'region_code', 'country_code', 'post_code', 'latitude', 'longitude',
-        'trading_hours', 'facility_features', 'custom_fields'
+        'trading_hours', 'facility_features', 'custom_fields',
     ];
 
     public static function syncWithStorman($user_id, $api_url, $api_token)
@@ -26,18 +27,20 @@ class CustomerFacility extends Model
 
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $api_token,
-                'Accept' => 'application/json'
+                'Authorization' => 'Bearer '.$api_token,
+                'Accept' => 'application/json',
             ])->withoutVerifying() // <- disables SSL check
-            ->get($api_url . '/api/v1/company/facilities');
+                ->get($api_url.'/api/v1/company/facilities');
 
             if ($response->failed()) {
-                throw new \Exception("Failed to fetch facilities from Storman.");
+                throw new \Exception('Failed to fetch facilities from Storage Provider.');
             }
 
             $facilities = $response->json();
 
-            if (empty($facilities)) return false;
+            if (empty($facilities)) {
+                return false;
+            }
 
             $existing_codes = self::where('user_id', $user_id)->pluck('code')->toArray();
             $insert_batch = [];
@@ -68,7 +71,7 @@ class CustomerFacility extends Model
                     'trading_hours' => isset($f['trading_hours']) ? json_encode($f['trading_hours']) : null,
                     'facility_features' => isset($f['facility_features']) ? json_encode($f['facility_features']) : null,
                     'custom_fields' => isset($f['custom_fields']) ? json_encode($f['custom_fields']) : null,
-                    'updated_at' => $time
+                    'updated_at' => $time,
                 ];
 
                 if (isset($f['code']) && in_array($f['code'], $existing_codes)) {
@@ -79,17 +82,18 @@ class CustomerFacility extends Model
                 }
             }
 
-            if (!empty($insert_batch)) {
+            if (! empty($insert_batch)) {
                 self::insert($insert_batch);
             }
 
             Log::info("Finished syncing facilities for user_id: $user_id");
+
             return true;
 
         } catch (\Exception $e) {
-            Log::error("Error syncing facilities for user_id: $user_id - " . $e->getMessage());
+            Log::error("Error syncing facilities for user_id: $user_id - ".$e->getMessage());
+
             return false;
         }
     }
-
 }

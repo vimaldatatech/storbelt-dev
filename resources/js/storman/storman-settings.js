@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
             api_url: {
                 validators: {
                     notEmpty: {
-                        message: 'Please enter Storman API URL'
+                        message: 'Please enter Storage Provider API URL'
                     },
                     uri: {
                         message: 'Please enter a valid URL'
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
             token: {
                 validators: {
                     notEmpty: {
-                        message: 'Please enter Storman API Token'
+                        message: 'Please enter Storage Provider API Token'
                     },
                     stringLength: {
                         min: 5,
@@ -59,38 +59,38 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             body: formData
         })
-        .then(res => res.json().then(j => ({ ok: res.ok, j })))
-        .then(({ ok, j }) => {
-            if (!ok) throw j;
+            .then(res => res.json().then(j => ({ ok: res.ok, j })))
+            .then(({ ok, j }) => {
+                if (!ok) throw j;
 
-            Swal.fire({
-                icon: 'success',
-                title: 'Saved!',
-                text: 'Storman settings updated successfully.',
-                customClass: {
-                    confirmButton: 'btn btn-success'
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Saved!',
+                    text: 'Storage Provider settings updated successfully.',
+                    customClass: {
+                        confirmButton: 'btn btn-success'
+                    }
+                });
+            })
+            .catch(err => {
+
+                let message = 'Something went wrong';
+
+                if (err?.errors) {
+                    message = Object.values(err.errors).flat().join('\n');
+                } else if (err?.message) {
+                    message = err.message;
                 }
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Save Failed',
+                    text: message,
+                    customClass: {
+                        confirmButton: 'btn btn-danger'
+                    }
+                });
             });
-        })
-        .catch(err => {
-
-            let message = 'Something went wrong';
-
-            if (err?.errors) {
-                message = Object.values(err.errors).flat().join('\n');
-            } else if (err?.message) {
-                message = err.message;
-            }
-
-            Swal.fire({
-                icon: 'error',
-                title: 'Save Failed',
-                text: message,
-                customClass: {
-                    confirmButton: 'btn btn-danger'
-                }
-            });
-        });
 
     });
 
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             Swal.fire({
                 title: 'Are you sure?',
-                text: 'This will sync Storman data.',
+                text: 'This will sync Storage Provider data.',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Yes, Sync Now!',
@@ -139,33 +139,33 @@ document.addEventListener('DOMContentLoaded', function () {
                         },
                         body: formDataN
                     })
-                    .then(res => res.json().then(j => ({ ok: res.ok, j })))
-                    .then(({ ok, j }) => {
-                        if (!ok) throw j;
+                        .then(res => res.json().then(j => ({ ok: res.ok, j })))
+                        .then(({ ok, j }) => {
+                            if (!ok) throw j;
 
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Sync Completed!',
-                            text: j.message || 'Data synced successfully.',
-                            customClass: {
-                                confirmButton: 'btn btn-success'
-                            }
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Sync Completed!',
+                                text: j.message || 'Data synced successfully.',
+                                customClass: {
+                                    confirmButton: 'btn btn-success'
+                                }
+                            });
+                        })
+                        .catch(err => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Sync Failed',
+                                text: err?.message || 'Server error occurred.',
+                                customClass: {
+                                    confirmButton: 'btn btn-danger'
+                                }
+                            });
+                        })
+                        .finally(() => {
+                            // Re-enable button after process
+                            syncBtn.disabled = false;
                         });
-                    })
-                    .catch(err => {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Sync Failed',
-                            text: err?.message || 'Server error occurred.',
-                            customClass: {
-                                confirmButton: 'btn btn-danger'
-                            }
-                        });
-                    })
-                    .finally(() => {
-                        // Re-enable button after process
-                        syncBtn.disabled = false;
-                    });
                 }
 
             });

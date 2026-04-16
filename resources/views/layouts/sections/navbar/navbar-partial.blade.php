@@ -1,47 +1,48 @@
 @php
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
+    use Illuminate\Support\Facades\Auth;
+    use Illuminate\Support\Facades\Route;
 @endphp
 
 <!--  Brand demo (display only for navbar-full and hide on below xl) -->
 @if (isset($navbarFull))
-<div class="navbar-brand app-brand demo d-none d-xl-flex py-0 me-6">
-    <a href="{{ url('/') }}" class="app-brand-link gap-2">
-        <span class="app-brand-logo demo">@include('_partials.macros')</span>
-        <span class="app-brand-text demo menu-text fw-bold text-heading">{{ config('variables.templateName') }}</span>
-    </a>
+    <div class="navbar-brand app-brand demo d-none d-xl-flex py-0 me-6">
+        <a href="{{ url('/') }}" class="app-brand-link gap-2">
+            <span class="app-brand-logo demo">@include('_partials.macros')</span>
+            <span
+                class="app-brand-text demo menu-text fw-bold text-heading">{{ config('variables.templateName') }}</span>
+        </a>
 
-    <!-- Display menu close icon only for horizontal-menu with navbar-full -->
-    @if (isset($menuHorizontal))
-    <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-xl-none">
-        <i class="icon-base bx bx-chevron-left d-flex align-items-center justify-content-center"></i>
-    </a>
-    @endif
-</div>
+        <!-- Display menu close icon only for horizontal-menu with navbar-full -->
+        @if (isset($menuHorizontal))
+            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-xl-none">
+                <i class="icon-base bx bx-chevron-left d-flex align-items-center justify-content-center"></i>
+            </a>
+        @endif
+    </div>
 @endif
 
 <!-- ! Not required for layout-without-menu -->
 @if (!isset($navbarHideToggle))
-<div
-    class="layout-menu-toggle navbar-nav align-items-xl-center me-4 me-xl-0{{ isset($menuHorizontal) ? ' d-xl-none ' : '' }} {{ isset($contentNavbar) ? ' d-xl-none ' : '' }}">
-    <a class="nav-item nav-link px-0 me-xl-6" href="javascript:void(0)">
-        <i class="icon-base bx bx-menu icon-md"></i>
-    </a>
-</div>
+    <div
+        class="layout-menu-toggle navbar-nav align-items-xl-center me-4 me-xl-0{{ isset($menuHorizontal) ? ' d-xl-none ' : '' }} {{ isset($contentNavbar) ? ' d-xl-none ' : '' }}">
+        <a class="nav-item nav-link px-0 me-xl-6" href="javascript:void(0)">
+            <i class="icon-base bx bx-menu icon-md"></i>
+        </a>
+    </div>
 @endif
 
 <div class="navbar-nav-right d-flex align-items-center justify-content-end" id="navbar-collapse">
 
     @if (!isset($menuHorizontal))
-    <!-- Search -->
-    <div class="navbar-nav align-items-center">
-        <div class="nav-item navbar-search-wrapper mb-0">
-            <a class="nav-item nav-link search-toggler px-0" href="javascript:void(0);">
-                <span class="d-inline-block text-body-secondary fw-normal" id="autocomplete"></span>
-            </a>
+        <!-- Search -->
+        <div class="navbar-nav align-items-center">
+            <div class="nav-item navbar-search-wrapper mb-0">
+                <a class="nav-item nav-link search-toggler px-0" href="javascript:void(0);">
+                    <span class="d-inline-block text-body-secondary fw-normal" id="autocomplete"></span>
+                </a>
+            </div>
         </div>
-    </div>
-    <!-- /Search -->
+        <!-- /Search -->
     @endif
 
     {{-- @php
@@ -70,7 +71,8 @@ use Illuminate\Support\Facades\Route;
         @role('company')
             @if ($facilities->count() > 0)
                 <li class="nav-item">
-                    <select class="form-select" id="facilitySelect" onchange="if(this.value) window.location.href=this.value;">
+                    <select class="form-select" id="facilitySelect"
+                        onchange="if(this.value) window.location.href=this.value;">
                         @foreach ($facilities as $item)
                             <option value="">{{ $item->short_name ?? 'No location available' }}</option>
                         @endforeach
@@ -82,46 +84,46 @@ use Illuminate\Support\Facades\Route;
 
     <ul class="navbar-nav flex-row align-items-center">
         @if (isset($menuHorizontal))
-        <!-- Search -->
-        <li class="nav-item navbar-search-wrapper me-2 me-xl-0">
-            <a class="nav-item nav-link search-toggler px-0" href="javascript:void(0);">
-                <span class="d-inline-block text-body-secondary fw-normal" id="autocomplete"></span>
-            </a>
-        </li>
-        <!-- /Search -->
+            <!-- Search -->
+            <li class="nav-item navbar-search-wrapper me-2 me-xl-0">
+                <a class="nav-item nav-link search-toggler px-0" href="javascript:void(0);">
+                    <span class="d-inline-block text-body-secondary fw-normal" id="autocomplete"></span>
+                </a>
+            </li>
+            <!-- /Search -->
         @endif
 
 
         @if ($configData['hasCustomizer'] == true)
-        <!-- Style Switcher -->
-        <li class="nav-item dropdown me-2 me-xl-0">
-            <a class="nav-link dropdown-toggle hide-arrow" id="nav-theme" href="javascript:void(0);"
-                data-bs-toggle="dropdown">
-                <i class="icon-base bx bx-sun icon-md theme-icon-active"></i>
-                <span class="d-none ms-2" id="nav-theme-text">Toggle theme</span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-theme-text">
-                <li>
-                    <button type="button" class="dropdown-item align-items-center active" data-bs-theme-value="light"
-                        aria-pressed="false">
-                        <span><i class="icon-base bx bx-sun icon-md me-3" data-icon="sun"></i>Light</span>
-                    </button>
-                </li>
-                <li>
-                    <button type="button" class="dropdown-item align-items-center" data-bs-theme-value="dark"
-                        aria-pressed="true">
-                        <span><i class="icon-base bx bx-moon icon-md me-3" data-icon="moon"></i>Dark</span>
-                    </button>
-                </li>
-                <li>
-                    <button type="button" class="dropdown-item align-items-center" data-bs-theme-value="system"
-                        aria-pressed="false">
-                        <span><i class="icon-base bx bx-desktop icon-md me-3" data-icon="desktop"></i>System</span>
-                    </button>
-                </li>
-            </ul>
-        </li>
-        <!-- / Style Switcher-->
+            <!-- Style Switcher -->
+            <li class="nav-item dropdown me-2 me-xl-0">
+                <a class="nav-link dropdown-toggle hide-arrow" id="nav-theme" href="javascript:void(0);"
+                    data-bs-toggle="dropdown">
+                    <i class="icon-base bx bx-sun icon-md theme-icon-active"></i>
+                    <span class="d-none ms-2" id="nav-theme-text">Toggle theme</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-theme-text">
+                    <li>
+                        <button type="button" class="dropdown-item align-items-center active"
+                            data-bs-theme-value="light" aria-pressed="false">
+                            <span><i class="icon-base bx bx-sun icon-md me-3" data-icon="sun"></i>Light</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="dropdown-item align-items-center" data-bs-theme-value="dark"
+                            aria-pressed="true">
+                            <span><i class="icon-base bx bx-moon icon-md me-3" data-icon="moon"></i>Dark</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="dropdown-item align-items-center" data-bs-theme-value="system"
+                            aria-pressed="false">
+                            <span><i class="icon-base bx bx-desktop icon-md me-3" data-icon="desktop"></i>System</span>
+                        </button>
+                    </li>
+                </ul>
+            </li>
+            <!-- / Style Switcher-->
         @endif
 
         <!-- Quick links  -->
@@ -276,7 +278,8 @@ use Illuminate\Support\Facades\Route;
                             <div class="d-flex">
                                 <div class="flex-shrink-0 me-3">
                                     <div class="avatar">
-                                        <img src="{{ asset('assets/img/avatars/2.png') }}" alt class="rounded-circle" />
+                                        <img src="{{ asset('assets/img/avatars/2.png') }}" alt
+                                            class="rounded-circle" />
                                     </div>
                                 </div>
                                 <div class="flex-grow-1">
@@ -320,7 +323,8 @@ use Illuminate\Support\Facades\Route;
                             <div class="d-flex">
                                 <div class="flex-shrink-0 me-3">
                                     <div class="avatar">
-                                        <img src="{{ asset('assets/img/avatars/9.png') }}" alt class="rounded-circle" />
+                                        <img src="{{ asset('assets/img/avatars/9.png') }}" alt
+                                            class="rounded-circle" />
                                     </div>
                                 </div>
                                 <div class="flex-grow-1">
@@ -363,7 +367,8 @@ use Illuminate\Support\Facades\Route;
                             <div class="d-flex">
                                 <div class="flex-shrink-0 me-3">
                                     <div class="avatar">
-                                        <img src="{{ asset('assets/img/avatars/5.png') }}" alt class="rounded-circle" />
+                                        <img src="{{ asset('assets/img/avatars/5.png') }}" alt
+                                            class="rounded-circle" />
                                     </div>
                                 </div>
                                 <div class="flex-grow-1">
@@ -383,7 +388,8 @@ use Illuminate\Support\Facades\Route;
                             <div class="d-flex">
                                 <div class="flex-shrink-0 me-3">
                                     <div class="avatar">
-                                        <img src="{{ asset('assets/img/avatars/6.png') }}" alt class="rounded-circle" />
+                                        <img src="{{ asset('assets/img/avatars/6.png') }}" alt
+                                            class="rounded-circle" />
                                     </div>
                                 </div>
                                 <div class="flex-grow-1">
@@ -438,28 +444,28 @@ use Illuminate\Support\Facades\Route;
             <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown">
                 <div class="avatar avatar-online">
                     @php
-                    $user = Auth::user();
-                    $name = $user?->first_name . ' ' . $user?->last_name ?? 'User';
+                        $user = Auth::user();
+                        $name = $user?->first_name . ' ' . $user?->last_name ?? 'User';
 
-                    $states = ['success', 'danger', 'warning', 'warning', 'info', 'dark', 'primary', 'secondary'];
-                    $state = $states[crc32($name) % count($states)];
+                        $states = ['success', 'danger', 'warning', 'warning', 'info', 'dark', 'primary', 'secondary'];
+                        $state = $states[crc32($name) % count($states)];
 
-                    preg_match_all('/\b\w/', $name, $matches);
-                    $letters = $matches[0] ?? [];
+                        preg_match_all('/\b\w/', $name, $matches);
+                        $letters = $matches[0] ?? [];
 
-                    if (count($letters) > 1) {
-                    $initials = strtoupper($letters[0] . end($letters));
-                    } else {
-                    $initials = strtoupper($letters[0] ?? '');
-                    }
+                        if (count($letters) > 1) {
+                            $initials = strtoupper($letters[0] . end($letters));
+                        } else {
+                            $initials = strtoupper($letters[0] ?? '');
+                        }
                     @endphp
 
                     @if ($user && $user->profile_photo_url)
-                    <img src="{{ $user->profile_photo_url }}" class="rounded-circle" alt="{{ $name }}">
+                        <img src="{{ $user->profile_photo_url }}" class="rounded-circle" alt="{{ $name }}">
                     @else
-                    <span class="avatar-initial rounded-circle bg-label-{{ $state }}">
-                        {{ $initials }}
-                    </span>
+                        <span class="avatar-initial rounded-circle bg-label-{{ $state }}">
+                            {{ $initials }}
+                        </span>
                     @endif
 
                 </div>
@@ -472,11 +478,12 @@ use Illuminate\Support\Facades\Route;
                             <div class="flex-shrink-0 me-3">
                                 <div class="avatar avatar-online">
                                     @if ($user && $user->profile_photo_url)
-                                    <img src="{{ $user->profile_photo_url }}" class="w-px-40 h-auto rounded-circle"
-                                        alt="{{ $name }}">
+                                        <img src="{{ $user->profile_photo_url }}"
+                                            class="w-px-40 h-auto rounded-circle" alt="{{ $name }}">
                                     @else
-                                    <span class="avatar-initial rounded-circle bg-label-{{ $state }}"> {{ $initials }}
-                                    </span>
+                                        <span class="avatar-initial rounded-circle bg-label-{{ $state }}">
+                                            {{ $initials }}
+                                        </span>
                                     @endif
                                 </div>
                             </div>
@@ -490,10 +497,9 @@ use Illuminate\Support\Facades\Route;
                                 </h6>
                                 <small class="text-body-secondary">
                                     @auth
-                                    {{ ucwords(str_replace(['-', '_'], ' ', Auth::user()->getRoleNames()->first() ??
-                                    'user')) }}
+                                        {{ ucwords(str_replace(['-', '_'], ' ', Auth::user()->getRoleNames()->first() ?? 'user')) }}
                                     @else
-                                    Admin
+                                        Admin
                                     @endauth
                                 </small>
                             </div>
@@ -510,13 +516,13 @@ use Illuminate\Support\Facades\Route;
                     </a>
                 </li>
                 @php
-                    $company = \App\Models\Company::where('user_id', Auth::id())->first();                    
+                    $company = \App\Models\Company::where('user_id', Auth::id())->first();
                 @endphp
                 @role('company')
-                    @if ($company)                        
+                    @if ($company)
                         <li>
-                            <a class="dropdown-item" href="{{ $company->platform === 'storman' ? route('storman.sync') : 'javascript:void(0)' }}">
-                                <i class="icon-base bx bx-cog icon-md me-3"></i><span>{{ ucfirst($company?->platform) ?? '' }} Settings</span>
+                            <a class="dropdown-item" href="{{ $company->platform === 'storage-provider' ? route('storman.sync') : 'javascript:void(0)' }}">
+                                <i class="icon-base bx bx-cog icon-md me-3"></i><span>{{ ucfirst($company?->platform) ?? '' }}Settings</span>
                             </a>
                         </li>
                     @endif
@@ -580,22 +586,22 @@ use Illuminate\Support\Facades\Route;
                     <div class="dropdown-divider my-1"></div>
                 </li>
                 @if (Auth::check())
-                <li>
-                    <a class="dropdown-item" href="{{ route('logout') }}"
-                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        <i class="icon-base bx bx-power-off icon-md me-3"></i><span>Logout</span>
-                    </a>
-                </li>
-                <form method="POST" id="logout-form" action="{{ route('logout') }}">
-                    @csrf
-                </form>
+                    <li>
+                        <a class="dropdown-item" href="{{ route('logout') }}"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <i class="icon-base bx bx-power-off icon-md me-3"></i><span>Logout</span>
+                        </a>
+                    </li>
+                    <form method="POST" id="logout-form" action="{{ route('logout') }}">
+                        @csrf
+                    </form>
                 @else
-                <li>
-                    <a class="dropdown-item"
-                        href="{{ Route::has('login') ? route('login') : url('auth/login-basic') }}">
-                        <i class="icon-base bx bx-log-in icon-md me-3"></i><span>Login</span>
-                    </a>
-                </li>
+                    <li>
+                        <a class="dropdown-item"
+                            href="{{ Route::has('login') ? route('login') : url('auth/login-basic') }}">
+                            <i class="icon-base bx bx-log-in icon-md me-3"></i><span>Login</span>
+                        </a>
+                    </li>
                 @endif
             </ul>
         </li>

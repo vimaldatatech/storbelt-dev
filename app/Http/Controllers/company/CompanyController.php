@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\company;
 
-use App\Models\Company;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
+use App\Models\Company;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class CompanyController extends Controller
@@ -73,7 +73,6 @@ class CompanyController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -81,28 +80,34 @@ class CompanyController extends Controller
         $companyId = $request->company_id;
 
         $validator = Validator::make($request->all(), [
-            'companyname' => ['required',Rule::unique('companies', 'slug')->ignore($request->company_id)],
+            'companyname' => ['required', Rule::unique('companies', 'slug')->ignore($request->company_id)],
         ], [
             'companyname.required' => 'Company name is required.',
-            'companyname.unique'   => 'Company "' . $request->companyname . '" already exists.',
+            'companyname.unique' => 'Company "'.$request->companyname.'" already exists.',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withInput()->withErrors($validator->errors());
         }
 
-
         if ($companyId) {
             // update the value
+            // Prepare user data
+            $userData = [
+                'first_name' => $request->fname,
+                'last_name' => $request->lname,
+                'email' => $request->email,
+                'status' => $request->status,
+            ];
+
+            // Only set password if provided
+            if (! empty($request->password)) {
+                $userData['password'] = Hash::make($request->password);
+            }
+
             $user = User::updateOrCreate(
-                ['email' => $request->email], // unique key
-                [
-                    'first_name' => $request->fname,
-                    'last_name'  => $request->lname,
-                    'email'      => $request->email,
-                    'status'     => $request->status,
-                    'password'   => Hash::make($request->password),
-                ]
+                ['email' => $request->email],
+                $userData
             );
             // Assign the role dynamically from the request
             if ($request->role) {
@@ -112,20 +117,20 @@ class CompanyController extends Controller
             $company = Company::updateOrCreate(
                 ['id' => $companyId],
                 [
-                    'user_id'  => $userId,
+                    'user_id' => $userId,
                     'name' => $request->companyname,
                     'trading_name' => $request->tradingname,
                     'phone' => $request->phone,
                     // Billing Address
-                    'billing_address'   => $request->billing_address,
-                    'billing_state'      => $request->billing_state,
-                    'billing_suburb'    => $request->billing_suburb,
-                    'billing_postcode'  => $request->billing_postcode,
+                    'billing_address' => $request->billing_address,
+                    'billing_state' => $request->billing_state,
+                    'billing_suburb' => $request->billing_suburb,
+                    'billing_postcode' => $request->billing_postcode,
 
                     // Delivery Address
-                    'delivery_address'  => $request->delivery_address,
-                    'delivery_state'     => $request->delivery_state,
-                    'delivery_suburb'   => $request->delivery_suburb,
+                    'delivery_address' => $request->delivery_address,
+                    'delivery_state' => $request->delivery_state,
+                    'delivery_suburb' => $request->delivery_suburb,
                     'delivery_postcode' => $request->delivery_postcode,
                     'website_url' => $request->websiteurl,
                     'abn_acn' => $request->abnacn,
@@ -137,9 +142,8 @@ class CompanyController extends Controller
                 ]
             );
 
-
             // user updated
-            return redirect()->route('company-list.index')->with('status', 'Company updated successfully');            
+            return redirect()->route('company-list.index')->with('status', 'Company updated successfully');
         } else {
             // create new one if slug is unique
             $companySlug = Company::where('slug', $request->slug)->first();
@@ -149,10 +153,10 @@ class CompanyController extends Controller
                     ['email' => $request->email], // unique key
                     [
                         'first_name' => $request->fname,
-                        'last_name'  => $request->lname,
-                        'email'      => $request->email,
-                        'password'   => Hash::make($request->password),
-                        'status'     => $request->status,
+                        'last_name' => $request->lname,
+                        'email' => $request->email,
+                        'password' => Hash::make($request->password),
+                        'status' => $request->status,
                     ]
                 );
                 // Assign the role dynamically from the request
@@ -163,20 +167,20 @@ class CompanyController extends Controller
                 $company = Company::updateOrCreate(
                     ['id' => $companyId],
                     [
-                        'user_id'  => $userId,
+                        'user_id' => $userId,
                         'name' => $request->companyname,
                         'trading_name' => $request->tradingname,
                         'phone' => $request->phone,
                         // Billing Address
-                        'billing_address'   => $request->billing_address,
-                        'billing_suburb'    => $request->billing_suburb,
-                        'billing_state'      => $request->billing_state,
-                        'billing_postcode'  => $request->billing_postcode,
+                        'billing_address' => $request->billing_address,
+                        'billing_suburb' => $request->billing_suburb,
+                        'billing_state' => $request->billing_state,
+                        'billing_postcode' => $request->billing_postcode,
 
                         // Delivery Address
-                        'delivery_address'  => $request->delivery_address,
-                        'delivery_suburb'   => $request->delivery_suburb,
-                        'delivery_state'     => $request->delivery_state,
+                        'delivery_address' => $request->delivery_address,
+                        'delivery_suburb' => $request->delivery_suburb,
+                        'delivery_state' => $request->delivery_state,
                         'delivery_postcode' => $request->delivery_postcode,
                         'website_url' => $request->websiteurl,
                         'abn_acn' => $request->abnacn,
@@ -192,7 +196,7 @@ class CompanyController extends Controller
                 return redirect()->route('company-list.index')->with('status', 'Company added successfully');
 
             } else {
-                return redirect()->back()->withInput()->withErrors(['companyname' => 'Company "' . $request->companyname . '" already exists.']);
+                return redirect()->back()->withInput()->withErrors(['companyname' => 'Company "'.$request->companyname.'" already exists.']);
             }
         }
     }
@@ -231,7 +235,6 @@ class CompanyController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
